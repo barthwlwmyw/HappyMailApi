@@ -1,4 +1,6 @@
 using HappyMailApi.Jwt;
+using HappyMailApi.Models;
+using HappyMailApi.Repositories;
 using HappyMailApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +36,9 @@ namespace HappyMailApi
             //services.Configure<JwtTokenConfig>(Configuration.GetSection(nameof(JwtTokenConfig)));
             //services.AddSingleton<IJwtTokenConfig>(sp => sp.GetRequiredService<IOptions<JwtTokenConfig>>().Value);
 
+            services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
+            services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+
             var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfig>();
             services.AddSingleton(jwtTokenConfig);
 
@@ -58,6 +63,8 @@ namespace HappyMailApi
                 };
             });
             services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
+
+            services.AddSingleton<UsersRepository>();
 
             services.AddScoped<IUserService, UserService>();
 
