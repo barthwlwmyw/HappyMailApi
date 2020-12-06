@@ -2,6 +2,7 @@
 using HappyMailApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,15 +19,24 @@ namespace HappyMailApi.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly ILogger<AccountController> _logger;
         private readonly IUserService _userService;
         private readonly IJwtAuthManager _jwtAuthManager;
 
-        public AccountController(ILogger<AccountController> logger, IUserService userService, IJwtAuthManager jwtAuthManager)
+        public AccountController(IConfiguration configuration, ILogger<AccountController> logger, IUserService userService, IJwtAuthManager jwtAuthManager)
         {
+            _configuration = configuration;
             _logger = logger;
             _userService = userService;
             _jwtAuthManager = jwtAuthManager;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("config")]
+        public ActionResult Config()
+        {
+            return Ok(_configuration.GetSection("DatabaseSettings").AsEnumerable().ToList());
         }
 
         [AllowAnonymous]
