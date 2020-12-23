@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HappyMailApi.Models;
+using HappyMailApi.Repositories;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,49 +10,34 @@ namespace HappyMailApi.Services
 {
     public interface IUserService
     {
-        bool IsAnExistingUser(string userName);
+        User Create(User user);
         bool IsValidUserCredentials(string userName, string password);
         string GetUserRole(string userName);
     }
 
     public class UserService : IUserService
     {
-        private readonly ILogger<UserService> _logger;
+        private readonly UsersRepository _userRepository;
 
-
-        private readonly IDictionary<string, string> _users = new Dictionary<string, string>
+        public UserService(UsersRepository userRepository)
         {
-            { "test1", "password1" },
-            { "test2", "password2" },
-            { "admin", "securePassword" }
-        };
-        // inject your database here for user validation
-        public UserService(ILogger<UserService> logger)
-        {
-            _logger = logger;
+            _userRepository = userRepository;
         }
+
+        public User Create(User user) => 
+            _userRepository.Create(user);
 
         public bool IsValidUserCredentials(string userName, string password)
         {
-            _logger.LogInformation($"Validating user [{userName}]");
-            if (string.IsNullOrWhiteSpace(userName))
+            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
             {
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                return false;
-            }
-
-            return _users.TryGetValue(userName, out var p) && p == password;
+            return _userRepository.Get(userName).Password == password;
         }
 
-        public bool IsAnExistingUser(string userName)
-        {
-            return _users.ContainsKey(userName);
-        }
-
+       
         public string GetUserRole(string userName)
         {
             if (!IsAnExistingUser(userName))
@@ -64,6 +51,11 @@ namespace HappyMailApi.Services
             }
 
             return UserRoles.BasicUser;
+        }
+
+        private bool IsAnExistingUser(string userName)
+        {
+            return _userRepository.Contains(userName);
         }
     }
 

@@ -56,7 +56,7 @@ namespace HappyMailApi.Controllers
             var role = _userService.GetUserRole(request.UserName);
             var claims = new[]
             {
-            new Claim(ClaimTypes.Name,request.UserName),
+            new Claim(ClaimTypes.Name, request.UserName),
             new Claim(ClaimTypes.Role, role)
             };
 
