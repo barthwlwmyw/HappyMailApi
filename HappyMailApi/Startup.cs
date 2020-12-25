@@ -65,8 +65,10 @@ namespace HappyMailApi
             services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
 
             services.AddSingleton<UsersRepository>();
+            services.AddSingleton<MessagesRepository>();
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             services.AddControllers();
         }
