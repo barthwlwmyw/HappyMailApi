@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace HappyMailApi.Controllers
             {
                 SenderUsername = User.Identity.Name,
                 RecipientUsername = message.RecipientUsername,
+                CreatedAt = DateTime.UtcNow,
                 Content = message.Content,
                 IsToxic = false
             });
@@ -47,7 +49,9 @@ namespace HappyMailApi.Controllers
 
     public class MessageToSend
     {
+        [Required]
         public string RecipientUsername { get; set; }
+        [Required]
         public string Content { get; set; }
     }
 
