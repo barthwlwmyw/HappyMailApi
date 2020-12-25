@@ -21,6 +21,9 @@ namespace HappyMailApi.Models
         [Required]
         public string RecipientUsername { get; set; }
 
+        [BsonElement("CreatedAt")]
+        public DateTime CreatedAt { get; set; }
+
         [BsonElement("Content")]
         [Required]
         public string Content { get; set; }
