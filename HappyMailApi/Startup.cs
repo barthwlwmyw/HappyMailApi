@@ -70,6 +70,7 @@ namespace HappyMailApi
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
 
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen();
         }
@@ -77,6 +78,9 @@ namespace HappyMailApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options => options.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
