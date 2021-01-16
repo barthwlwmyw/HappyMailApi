@@ -38,41 +38,35 @@ namespace HappyMailApi.Controllers
         [HttpPost("send")]
         public IActionResult Send(MessageToSend message)
         {
+            var isToxic = false;
+
+            try
+            {
+                var input = new ModelInput
+                {
+                    SentimentText = message.Content
+                };
+
+                ModelOutput result = ModelConsumer.Predict(input);
+
+                if(result.Prediction == "1")
+                {
+                    isToxic = true;
+                }
+
+            }
+            catch (Exception){}
+
             var res = _messageService.Send(new Message
             {
                 SenderUsername = User.Identity.Name,
                 RecipientUsername = message.RecipientUsername,
                 CreatedAt = DateTime.UtcNow,
                 Content = message.Content,
-                IsToxic = false
+                IsToxic = isToxic
             });
 
             return Ok(res);
-        }
-
-        [AllowAnonymous]
-        [HttpPost("mltest")]
-        public IActionResult Mltest()
-        {
-            try
-            {
-                var input = new ModelInput();
-
-                var userInput = "I'm a bloody fuc*ing bastard toxic comment";
-
-                input.SentimentText = userInput;
-
-
-                ModelOutput result = ModelConsumer.Predict(input);
-
-
-                return Ok($"Prediction result: ${result.Prediction}");
-
-            }
-            catch(Exception e)
-            {
-                return Ok(e.Message);
-            }
         }
     }
 
