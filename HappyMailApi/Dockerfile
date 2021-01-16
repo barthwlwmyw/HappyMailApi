@@ -11,4 +11,5 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 EXPOSE 80
 COPY --from=build-env /app/out .
+COPY MLModel.zip ./
 CMD ASPNETCORE_URLS=http://*:$PORT dotnet HappyMailApi.dll

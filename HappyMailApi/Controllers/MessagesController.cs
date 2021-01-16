@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using HappyMailApi.Models;
 using HappyMailApi.Services;
 using Microsoft.AspNetCore.Authorization;
+using HappyMailApi.SentimentAnalysis;
+using Microsoft.Extensions.Configuration;
 
 namespace HappyMailApi.Controllers
 {
@@ -18,11 +20,13 @@ namespace HappyMailApi.Controllers
     {
         private readonly IMessageService _messageService;
         private readonly IUserService _userService;
+        private readonly IConfiguration _configuration;
 
-        public MessagesController(IMessageService messageService, IUserService userService)
+        public MessagesController(IMessageService messageService, IUserService userService, IConfiguration configuration)
         {
             _messageService = messageService;
             _userService = userService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -44,6 +48,31 @@ namespace HappyMailApi.Controllers
             });
 
             return Ok(res);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("mltest")]
+        public IActionResult Mltest()
+        {
+            try
+            {
+                var input = new ModelInput();
+
+                var userInput = "I'm a bloody fuc*ing bastard toxic comment";
+
+                input.SentimentText = userInput;
+
+
+                ModelOutput result = ModelConsumer.Predict(input);
+
+
+                return Ok($"Prediction result: ${result.Prediction}");
+
+            }
+            catch(Exception e)
+            {
+                return Ok(e.Message);
+            }
         }
     }
 
