@@ -13,7 +13,7 @@ namespace HappyMailApi.SentimentAnalysis
 
         private static Lazy<PredictionEngine<ModelInput, ModelOutput>> PredictionEngine = new Lazy<PredictionEngine<ModelInput, ModelOutput>>(CreatePredictionEngine);
 
-        public static PredictionEngine<ModelInput, ModelOutput> CreatePredictionEngine()
+        private static PredictionEngine<ModelInput, ModelOutput> CreatePredictionEngine()
         {
             MLContext mlContext = new MLContext();
             string modelPath = @"MLModel.zip"; 

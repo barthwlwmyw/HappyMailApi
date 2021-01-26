@@ -1,10 +1,5 @@
 ﻿using HappyMailApi.Models;
 using HappyMailApi.Repositories;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HappyMailApi.Services
 {
@@ -34,7 +29,7 @@ namespace HappyMailApi.Services
                 return false;
             }
 
-            return _userRepository.Get(userName).Password == password;
+            return _userRepository.Get(userName)?.Password == password;
         }
 
        

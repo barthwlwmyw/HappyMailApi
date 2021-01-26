@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HappyMailApi.Models;
@@ -23,8 +22,14 @@ namespace HappyMailApi.Repositories
         public List<Message> GetBySender(string username) =>
             _messages.Find(message => message.SenderUsername == username).ToList();
 
-        public List<Message> GetByRecipient(string username) =>
-            _messages.Find(message => message.RecipientUsername == username).ToList();
+        public async Task<List<Message>> GetByRecipient(string username)
+        {
+            var messages = await _messages.FindAsync(message => message.RecipientUsername == username);
+
+            return messages.ToList();
+        }
+            
+
 
         public Message Create(Message message)
         {
@@ -37,6 +42,11 @@ namespace HappyMailApi.Repositories
             {
                 return null;
             }
+        }
+
+        public void Delete(string messageId)
+        {
+            _messages.DeleteOne(msg => msg.Id == messageId);
         }
     }
 }

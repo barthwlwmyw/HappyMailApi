@@ -5,6 +5,7 @@ using System.Text;
 using HappyMailApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Threading.Tasks;
 
 namespace HappyMailApi.Controllers
 {
@@ -21,12 +22,17 @@ namespace HappyMailApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             var stringBuilder = new StringBuilder();
 
             stringBuilder.AppendLine("HappyMail 💛📧 API is up and running");
             stringBuilder.AppendLine($"UTC time: ({DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)})");
+
+            if (!string.IsNullOrWhiteSpace(User.Identity.Name)) 
+            {
+                stringBuilder.AppendLine($"Your username: {User.Identity.Name}");
+            }
 
             var isMongoAlive = false;
             try

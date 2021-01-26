@@ -10,7 +10,6 @@ using System.Text.Json.Serialization;
 namespace HappyMailApi.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
@@ -23,7 +22,6 @@ namespace HappyMailApi.Controllers
             _jwtAuthManager = jwtAuthManager;
         }
 
-        [AllowAnonymous]
         [HttpPost("signup")]
         public IActionResult SignUp([FromBody] User user)
         {
@@ -31,7 +29,6 @@ namespace HappyMailApi.Controllers
            return Ok(_userService.Create(user));
         }
 
-        [AllowAnonymous]
         [HttpPost("signin")]
         public IActionResult SignIn([FromBody] User user)
         {
@@ -47,15 +44,6 @@ namespace HappyMailApi.Controllers
                 AccessToken = jwtResult.AccessToken,
                 RefreshToken = jwtResult.RefreshToken.TokenString
             });
-        }
-
-        [HttpPost("logout")]
-        [Authorize]
-        public ActionResult Logout()
-        {
-            var userName = User.Identity.Name;
-            _jwtAuthManager.RemoveRefreshTokenByUserName(userName); 
-            return Ok();
         }
 
         private Claim[] GetUserClaims(User user)
